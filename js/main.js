@@ -136,8 +136,18 @@ const movePlayer = () => {
 }
 
 const generateObstacle = () => {
-  const y = Math.floor(Math.random() * (360 - 100) + 100)
+  if (frames % 70 === 0) {
+    let y = 100
+    do {
+      y = Math.floor(Math.random() * (360 - y) + y)
+      sortObstacle(y)
+      if (Math.floor(Math.random() * 10 + 1) === 9) break
+      y += 100
+    } while (y <= 360)
+  }
+}
 
+const sortObstacle = (y) => {
   const randomNum = Math.floor(Math.random() * 10 + 1)
   if (level === 1) {
     probLogo = 3
@@ -154,22 +164,21 @@ const generateObstacle = () => {
     probItem = 5
     probVirus = 10
   }
+
   console.log(randomNum)
-  if (frames % 70 === 0) {
-    randomNum <= probLogo ? obstacles.push(new Obstacle(y, 'logo')) : null
-    randomNum <= probLogo ? obstacles.push(new Obstacle(y + 100, 'logo')) : null
 
-    if (randomNum > probLogo && randomNum <= probItem) {
-      const randomItem = Math.floor(Math.random() * 3 + 1)
-      randomItem === 1 ? obstacles.push(new Obstacle(y, 'gel')) : null
-      randomItem === 2 ? obstacles.push(new Obstacle(y, 'distancia')) : null
-      randomItem === 3 ? obstacles.push(new Obstacle(y, 'cubrebocas')) : null
-    }
+  randomNum <= probLogo ? obstacles.push(new Obstacle(y, 'logo')) : null
 
-    randomNum > probItem && randomNum <= probVirus
-      ? obstacles.push(new Obstacle(y, 'virus'))
-      : null
+  if (randomNum > probLogo && randomNum <= probItem) {
+    const randomItem = Math.floor(Math.random() * 3 + 1)
+    randomItem === 1 ? obstacles.push(new Obstacle(y, 'gel')) : null
+    randomItem === 2 ? obstacles.push(new Obstacle(y, 'distancia')) : null
+    randomItem === 3 ? obstacles.push(new Obstacle(y, 'cubrebocas')) : null
   }
+
+  randomNum > probItem && randomNum <= probVirus
+    ? obstacles.push(new Obstacle(y, 'virus'))
+    : null
 }
 
 const drawObstacles = () => {
