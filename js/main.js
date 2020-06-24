@@ -7,11 +7,12 @@ let interval
 let keys = []
 const friction = 0.8
 let frames = 0
+let mainSpeed = 40
 const obstacles = []
-let level = 3
-let probLogo = 3
-let probItem = 8
-let probVirus = 10
+let level = 1
+let probLogo
+let probItem
+let probVirus
 let score = 0
 let lifes = 10
 
@@ -188,8 +189,6 @@ const sortObstacle = (y) => {
     probVirus = 10
   }
 
-  console.log(randomNum)
-
   randomNum <= probLogo ? obstacles.push(new Obstacle(y, 'logo')) : null
 
   if (randomNum > probLogo && randomNum <= probItem) {
@@ -205,7 +204,6 @@ const sortObstacle = (y) => {
 }
 
 const drawObstacles = () => {
-  console.log(obstacles)
   obstacles.forEach((obstacle) => obstacle.draw())
 }
 
@@ -214,7 +212,6 @@ const collisions = () => {
     if (player.isTouching(obstacle)) {
       obstacle.x = -100
       obstacle.y = -100
-      console.log(`is touching ${obstacle.type}`)
       obstacle.type === 'logo' ? (score += 20) : null
       obstacle.type === 'cubrebocas' ? (score += 10) : null
       obstacle.type === 'gel' ? (score += 10) : null
@@ -289,6 +286,7 @@ const drawScore = (lifes) => {
     const hpbar00 = new Image()
     hpbar00.src = images.hpbar00
     context.drawImage(hpbar00, 400, 30, 250, 43)
+    gameOver()
   }
 }
 
@@ -318,14 +316,30 @@ const update = () => {
   collisions()
   limits()
   drawScore(lifes)
+  checkLevel()
 }
 
 const start = () => {
   if (interval) return
-  interval = setInterval(update, 1000 / 60)
+  interval = setInterval(update, 1000 / mainSpeed)
 }
 
-//funciones auxiliares
+const gameOver = () => {
+  clearInterval(interval)
+}
+
+const checkLevel = (interval) => {
+  score >= 300 && score < 800 ? (level = 2) : null
+  score >= 800 && score < 1000 ? (level = 3) : null
+  if (level === 2) {
+    clearInterval(interval)
+    interval = setInterval(update, 1000 / 60)
+  }
+  if (level === 3) {
+    clearInterval(interval)
+    interval = setInterval(update, 1000 / 90)
+  }
+}
 
 //listeners
 document.addEventListener('keydown', ({ keyCode }) => {
