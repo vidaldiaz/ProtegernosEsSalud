@@ -23,6 +23,18 @@ const images = {
   gel: './assets/gel.png',
   distancia: './assets/distancia.png',
   logo: './assets/logo.png',
+  logo_back: './assets/logo_back.jpg',
+  hpbar00: './assets/hpBar00.png',
+  hpbar01: './assets/hpBar01.png',
+  hpbar02: './assets/hpBar02.png',
+  hpbar03: './assets/hpBar03.png',
+  hpbar04: './assets/hpBar04.png',
+  hpbar05: './assets/hpBar05.png',
+  hpbar06: './assets/hpBar06.png',
+  hpbar07: './assets/hpBar07.png',
+  hpbar08: './assets/hpBar08.png',
+  hpbar09: './assets/hpBar09.png',
+  hpbar10: './assets/hpBar10.png',
 }
 
 //clases
@@ -200,8 +212,8 @@ const drawObstacles = () => {
 const collisions = () => {
   obstacles.forEach((obstacle) => {
     if (player.isTouching(obstacle)) {
-      obstacle.x = null
-      obstacle.y = null
+      obstacle.x = -100
+      obstacle.y = -100
       console.log(`is touching ${obstacle.type}`)
       obstacle.type === 'logo' ? (score += 20) : null
       obstacle.type === 'cubrebocas' ? (score += 10) : null
@@ -212,11 +224,72 @@ const collisions = () => {
   })
 }
 
-const drawScore = () => {
+const drawScore = (lifes) => {
+  const logo_back = new Image()
+  logo_back.src = images.logo_back
+  context.drawImage(logo_back, 20, 20, 60, 60)
+  const logo_camp = new Image()
+  logo_camp.src = images.logo_back
+  context.drawImage(logo_back, canvas.width - 80, 20, 60, 60)
   context.fillStyle = 'white'
-  context.font = '30px Tahoma'
-  context.fillText(`Puntos: ${score}`, 30, 30)
-  context.fillText(`Vidas: ${lifes}`, 200, 30)
+  context.font = `20px 'Press Start 2P'`
+  context.fillText(`Puntos: ${score}`, 120, 48)
+  context.fillText(`Nivel: ${level}`, 120, 78)
+  if (lifes === 10) {
+    const hpbar10 = new Image()
+    hpbar10.src = images.hpbar10
+    context.drawImage(hpbar10, 400, 30, 250, 43)
+  }
+  if (lifes === 9) {
+    const hpbar09 = new Image()
+    hpbar09.src = images.hpbar09
+    context.drawImage(hpbar09, 400, 30, 250, 43)
+  }
+  if (lifes === 8) {
+    const hpbar08 = new Image()
+    hpbar08.src = images.hpbar08
+    context.drawImage(hpbar08, 400, 30, 250, 43)
+  }
+  if (lifes === 7) {
+    const hpbar07 = new Image()
+    hpbar07.src = images.hpbar07
+    context.drawImage(hpbar07, 400, 30, 250, 43)
+  }
+  if (lifes === 6) {
+    const hpbar06 = new Image()
+    hpbar06.src = images.hpbar06
+    context.drawImage(hpbar06, 400, 30, 250, 43)
+  }
+  if (lifes === 5) {
+    const hpbar05 = new Image()
+    hpbar05.src = images.hpbar05
+    context.drawImage(hpbar05, 400, 30, 250, 43)
+  }
+  if (lifes === 4) {
+    const hpbar04 = new Image()
+    hpbar04.src = images.hpbar04
+    context.drawImage(hpbar04, 400, 30, 250, 43)
+  }
+  if (lifes === 3) {
+    const hpbar03 = new Image()
+    hpbar03.src = images.hpbar03
+    context.drawImage(hpbar03, 400, 30, 250, 43)
+  }
+  if (lifes === 2) {
+    const hpbar02 = new Image()
+    hpbar02.src = images.hpbar02
+    context.drawImage(hpbar02, 400, 30, 250, 43)
+  }
+  if (lifes === 1) {
+    const hpbar01 = new Image()
+    hpbar01.src = images.hpbar01
+    context.drawImage(hpbar01, 400, 30, 250, 43)
+  }
+  if (lifes <= 0) {
+    const hpbar00 = new Image()
+    hpbar00.src = images.hpbar00
+    context.drawImage(hpbar00, 400, 30, 250, 43)
+  }
 }
 
 const limits = () => {
@@ -244,7 +317,7 @@ const update = () => {
   drawObstacles()
   collisions()
   limits()
-  drawScore()
+  drawScore(lifes)
 }
 
 const start = () => {
