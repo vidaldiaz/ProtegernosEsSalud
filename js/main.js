@@ -8,10 +8,12 @@ let keys = []
 const friction = 0.8
 let frames = 0
 const obstacles = []
-let level = 1
+let level = 3
 let probLogo = 3
 let probItem = 8
 let probVirus = 10
+let score = 0
+let lifes = 10
 
 const images = {
   background: './assets/background.jpg',
@@ -64,6 +66,15 @@ class Player {
 
   draw() {
     context.drawImage(this.img, this.x, this.y, this.width, this.height)
+  }
+
+  isTouching(obstacle) {
+    return (
+      this.x < obstacle.x + obstacle.width &&
+      this.x + this.width > obstacle.x &&
+      this.y < obstacle.y + obstacle.height &&
+      this.y + this.height > obstacle.y
+    )
   }
 }
 
@@ -186,6 +197,28 @@ const drawObstacles = () => {
   obstacles.forEach((obstacle) => obstacle.draw())
 }
 
+const collisions = () => {
+  obstacles.forEach((obstacle) => {
+    if (player.isTouching(obstacle)) {
+      obstacle.x = null
+      obstacle.y = null
+      console.log(`is touching ${obstacle.type}`)
+      obstacle.type === 'logo' ? (score += 20) : null
+      obstacle.type === 'cubrebocas' ? (score += 10) : null
+      obstacle.type === 'gel' ? (score += 10) : null
+      obstacle.type === 'distancia' ? (score += 10) : null
+      obstacle.type === 'virus' ? lifes-- : null
+    }
+  })
+}
+
+const drawScore = () => {
+  context.fillStyle = 'white'
+  context.font = '30px Tahoma'
+  context.fillText(`Puntos: ${score}`, 30, 30)
+  context.fillText(`Vidas: ${lifes}`, 200, 30)
+}
+
 const limits = () => {
   player.x > canvas.width - player.width || player.x + player.velX < 0
     ? (player.velX *= -2)
@@ -209,7 +242,9 @@ const update = () => {
   movePlayer()
   generateObstacle()
   drawObstacles()
+  collisions()
   limits()
+  drawScore()
 }
 
 const start = () => {
