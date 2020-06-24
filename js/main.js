@@ -328,7 +328,7 @@ const gameOver = () => {
   clearInterval(interval)
 }
 
-const checkLevel = (interval) => {
+const checkLevel = () => {
   score >= 300 && score < 800 ? (level = 2) : null
   score >= 800 && score < 1000 ? (level = 3) : null
   if (level === 2) {
