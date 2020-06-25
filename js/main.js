@@ -9,13 +9,13 @@ let keys = []
 const friction = 0.8
 let frames = 0
 let mainSpeed = 40
-const obstacles = []
-let level = 1
+let obstacles = []
+let level = 3
 let probLogo
 let probItem
 let probVirus
 let score = 0
-let lifes = 10
+let lives = 10
 let selected = 'boy'
 
 const images = {
@@ -228,73 +228,76 @@ const collisions = () => {
       obstacle.type === 'cubrebocas' ? (score += 10) : null
       obstacle.type === 'gel' ? (score += 10) : null
       obstacle.type === 'distancia' ? (score += 10) : null
-      obstacle.type === 'virus' ? lifes-- : null
+      obstacle.type === 'virus' ? lives-- : null
     }
   })
 }
 
-const drawScore = (lifes) => {
+const drawScore = (lives) => {
   const logo_back = new Image()
   logo_back.src = images.logo_back
   context.drawImage(logo_back, 20, 20, 60, 60)
-  const logo_camp = new Image()
-  logo_camp.src = images.logo_back
-  context.drawImage(logo_back, canvas.width - 80, 20, 60, 60)
+
   context.fillStyle = 'white'
   context.font = `20px 'Press Start 2P'`
   context.fillText(`Puntos: ${score}`, 120, 48)
   context.fillText(`Nivel: ${level}`, 120, 78)
-  if (lifes === 10) {
+
+  const logo_camp = new Image()
+  logo_camp.src = images.logo_back
+  context.drawImage(logo_camp, canvas.width - 80, 20, 60, 60)
+
+  if (lives === 10) {
     const hpbar10 = new Image()
     hpbar10.src = images.hpbar10
     context.drawImage(hpbar10, 400, 30, 250, 43)
   }
-  if (lifes === 9) {
+  if (lives === 9) {
     const hpbar09 = new Image()
     hpbar09.src = images.hpbar09
     context.drawImage(hpbar09, 400, 30, 250, 43)
   }
-  if (lifes === 8) {
+  if (lives === 8) {
     const hpbar08 = new Image()
     hpbar08.src = images.hpbar08
     context.drawImage(hpbar08, 400, 30, 250, 43)
   }
-  if (lifes === 7) {
+  if (lives === 7) {
     const hpbar07 = new Image()
     hpbar07.src = images.hpbar07
     context.drawImage(hpbar07, 400, 30, 250, 43)
   }
-  if (lifes === 6) {
+  if (lives === 6) {
     const hpbar06 = new Image()
     hpbar06.src = images.hpbar06
     context.drawImage(hpbar06, 400, 30, 250, 43)
   }
-  if (lifes === 5) {
+  if (lives === 5) {
     const hpbar05 = new Image()
     hpbar05.src = images.hpbar05
     context.drawImage(hpbar05, 400, 30, 250, 43)
   }
-  if (lifes === 4) {
+  if (lives === 4) {
     const hpbar04 = new Image()
     hpbar04.src = images.hpbar04
     context.drawImage(hpbar04, 400, 30, 250, 43)
   }
-  if (lifes === 3) {
+  if (lives === 3) {
     const hpbar03 = new Image()
     hpbar03.src = images.hpbar03
     context.drawImage(hpbar03, 400, 30, 250, 43)
   }
-  if (lifes === 2) {
+  if (lives === 2) {
     const hpbar02 = new Image()
     hpbar02.src = images.hpbar02
     context.drawImage(hpbar02, 400, 30, 250, 43)
   }
-  if (lifes === 1) {
+  if (lives === 1) {
     const hpbar01 = new Image()
     hpbar01.src = images.hpbar01
     context.drawImage(hpbar01, 400, 30, 250, 43)
   }
-  if (lifes <= 0) {
+  if (lives <= 0) {
     const hpbar00 = new Image()
     hpbar00.src = images.hpbar00
     context.drawImage(hpbar00, 400, 30, 250, 43)
@@ -327,6 +330,7 @@ const update = () => {
   if (stage === 'game') {
     frames++
     context.clearRect(0, 0, canvas.width, canvas.height)
+
     background.draw()
     player.draw()
     movePlayer()
@@ -334,20 +338,26 @@ const update = () => {
     drawObstacles()
     collisions()
     limits()
-    drawScore(lifes)
+    drawScore(lives)
     checkLevel()
   }
 
   if (stage === 'gameOver') {
+    player = new Player()
     gameOver(score)
     score = 0
     level = 1
-    lifes = 10
-    player = new Player()
+    lives = 10
+    obstacles.forEach((obstacle) => {
+      obstacle.x = -100
+      obstacle.y = -100
+    })
+    obstacles = []
+    keys = []
   }
 }
 
-function start() {
+const start = () => {
   if (interval) return
   interval = setInterval(update, 1000 / mainSpeed)
 }
