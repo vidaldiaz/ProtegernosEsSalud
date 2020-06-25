@@ -3,6 +3,7 @@ const context = canvas.getContext('2d')
 
 //variables auxiliares
 
+let stage = 'start1'
 let interval
 let keys = []
 const friction = 0.8
@@ -15,10 +16,12 @@ let probItem
 let probVirus
 let score = 0
 let lifes = 10
+let selected = 'boy'
 
 const images = {
   background: './assets/background.jpg',
   player_girl: './assets/girl.png',
+  player_boy: './assets/boy.png',
   virus: './assets/virus.png',
   cubrebocas: './assets/cubrebocas.png',
   gel: './assets/gel.png',
@@ -36,6 +39,15 @@ const images = {
   hpbar08: './assets/hpBar08.png',
   hpbar09: './assets/hpBar09.png',
   hpbar10: './assets/hpBar10.png',
+  loseL1: './assets/loseL1.gif',
+  loseL2: './assets/loseL2.gif',
+  loseL3: './assets/loseL3.gif',
+  win: './assets/win.gif',
+  startScreen1: './assets/startScreen1.gif',
+  startScreen2: './assets/startScreen2.gif',
+  startScreen3: './assets/startScreen3.gif',
+  selectNino: './assets/selectNino.gif',
+  selectNina: './assets/selectNina.gif',
 }
 
 //clases
@@ -65,7 +77,7 @@ class Background {
 }
 
 class Player {
-  constructor() {
+  constructor(gender) {
     this.x = 50
     this.y = 270
     this.width = 50
@@ -286,7 +298,8 @@ const drawScore = (lifes) => {
     const hpbar00 = new Image()
     hpbar00.src = images.hpbar00
     context.drawImage(hpbar00, 400, 30, 250, 43)
-    gameOver()
+    stage = 'gameOver'
+    //gameOver(score)
   }
 }
 
@@ -302,35 +315,106 @@ const limits = () => {
 
 //instancias
 const background = new Background()
-const player = new Player()
+let player = new Player()
 
 //funciones principales
 const update = () => {
-  frames++
-  context.clearRect(0, 0, canvas.width, canvas.height)
-  background.draw()
-  player.draw()
-  movePlayer()
-  generateObstacle()
-  drawObstacles()
-  collisions()
-  limits()
-  drawScore(lifes)
-  checkLevel()
+  stage === 'start1' ? start1() : null
+  stage === 'start2' ? start2() : null
+  stage === 'start3' ? start3() : null
+  stage === 'selectPlayer' ? selectPlayer(selected) : null
+
+  if (stage === 'game') {
+    frames++
+    context.clearRect(0, 0, canvas.width, canvas.height)
+    background.draw()
+    player.draw()
+    movePlayer()
+    generateObstacle()
+    drawObstacles()
+    collisions()
+    limits()
+    drawScore(lifes)
+    checkLevel()
+  }
+
+  if (stage === 'gameOver') {
+    gameOver(score)
+    score = 0
+    level = 1
+    lifes = 10
+    player = new Player()
+  }
 }
 
-const start = () => {
+function start() {
   if (interval) return
   interval = setInterval(update, 1000 / mainSpeed)
 }
+const start1 = () => {
+  const ss1 = new Image()
+  ss1.src = images.startScreen1
+  context.drawImage(ss1, 0, 0, canvas.width, canvas.height)
+}
 
-const gameOver = () => {
-  clearInterval(interval)
+const start2 = () => {
+  const ss2 = new Image()
+  ss2.src = images.startScreen2
+  context.drawImage(ss2, 0, 0, canvas.width, canvas.height)
+}
+
+const start3 = () => {
+  const ss3 = new Image()
+  ss3.src = images.startScreen3
+  context.drawImage(ss3, 0, 0, canvas.width, canvas.height)
+}
+
+const selectPlayer = (selected) => {
+  if (selected === 'boy') {
+    const boySelected = new Image()
+    boySelected.src = images.selectNino
+    context.drawImage(boySelected, 0, 0, canvas.width, canvas.height)
+    player.img.src = images.player_boy
+  }
+  if (selected === 'girl') {
+    const girlSelected = new Image()
+    girlSelected.src = images.selectNina
+    context.drawImage(girlSelected, 0, 0, canvas.width, canvas.height)
+    player.img.src = images.player_girl
+  }
+  //selected === 'boy' ? player.img.src = images.player_boy
+}
+
+const gameOver = (score) => {
+  if (score < 300) {
+    const loseL1 = new Image()
+    loseL1.src = images.loseL1
+    context.drawImage(loseL1, 0, 0, canvas.width, canvas.height)
+  }
+  if (score >= 300 && score < 800) {
+    const loseL2 = new Image()
+    loseL2.src = images.loseL2
+    context.drawImage(loseL2, 0, 0, canvas.width, canvas.height)
+  }
+  if (score >= 800 && score < 1000) {
+    const loseL3 = new Image()
+    loseL3.src = images.loseL3
+    context.drawImage(loseL3, 0, 0, canvas.width, canvas.height)
+  }
+  if (score > 1000) {
+    const win = new Image()
+    win.src = images.win
+    context.drawImage(win, 0, 0, canvas.width, canvas.height)
+  }
 }
 
 const checkLevel = () => {
   score >= 300 && score < 800 ? (level = 2) : null
   score >= 800 && score < 1000 ? (level = 3) : null
+  if (level === 1) {
+    clearInterval(interval)
+    interval = setInterval(update, 1000 / 40)
+  }
   if (level === 2) {
     clearInterval(interval)
     interval = setInterval(update, 1000 / 60)
@@ -341,13 +425,49 @@ const checkLevel = () => {
   }
 }
 
+start()
 //listeners
 document.addEventListener('keydown', ({ keyCode }) => {
   keys[keyCode] = true
   key = keyCode
   switch (key) {
     case 13:
-      return start()
+      if (stage === 'start1') {
+        stage = 'start2'
+        break
+      }
+      if (stage === 'start2') {
+        stage = 'start3'
+        break
+      }
+      if (stage === 'start3') {
+        stage = 'selectPlayer'
+        break
+      }
+      if (stage === 'selectPlayer') {
+        stage = 'game'
+        break
+      }
+
+      if (stage === 'gameOver') {
+        stage = 'selectPlayer'
+        break
+      }
+
+    case 37:
+      stage === 'selectPlayer'
+        ? selected === 'girl'
+          ? (selected = 'boy')
+          : (selected = 'girl')
+        : null
+      break
+
+    case 39:
+      stage === 'selectPlayer'
+        ? selected === 'girl'
+          ? (selected = 'boy')
+          : (selected = 'girl')
+        : null
       break
   }
 })
