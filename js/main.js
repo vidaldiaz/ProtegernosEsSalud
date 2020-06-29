@@ -10,11 +10,11 @@ const friction = 0.8
 let frames = 0
 let mainSpeed = 40
 let obstacles = []
-let level = 3
+let level = 1
 let probLogo
 let probItem
 let probVirus
-let score = 900
+let score = 0
 let lives = 1
 let selected = 'boy'
 let lastScore
