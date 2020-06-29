@@ -9,4 +9,5 @@ body {
   align-items: center;
   justify-content: center;
   background-image: url('../assets/backApp.gif');
+  background-size: cover;
 }
