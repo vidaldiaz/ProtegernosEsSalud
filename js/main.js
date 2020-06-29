@@ -10,13 +10,14 @@ const friction = 0.8
 let frames = 0
 let mainSpeed = 40
 let obstacles = []
-let level = 1
+let level = 3
 let probLogo
 let probItem
 let probVirus
-let score = 0
+let score = 800
 let lives = 10
 let selected = 'boy'
+let lastScore
 
 const images = {
   background: './assets/background.jpg',
@@ -301,8 +302,8 @@ const drawScore = (lives) => {
     const hpbar00 = new Image()
     hpbar00.src = images.hpbar00
     context.drawImage(hpbar00, 400, 30, 250, 43)
-    stage = 'gameOver'
-    //gameOver(score)
+
+    stage = 'reset'
   }
 }
 
@@ -342,9 +343,9 @@ const update = () => {
     checkLevel()
   }
 
-  if (stage === 'gameOver') {
+  if (stage === 'reset') {
+    lastScore = score
     player = new Player()
-    gameOver(score)
     score = 0
     level = 1
     lives = 10
@@ -354,6 +355,11 @@ const update = () => {
     })
     obstacles = []
     keys = []
+    stage = 'gameOver'
+  }
+
+  if (stage === 'gameOver') {
+    gameOver(lastScore)
   }
 }
 
@@ -396,6 +402,7 @@ const selectPlayer = (selected) => {
 }
 
 const gameOver = (score) => {
+  console.log('Entrando a GameOver', lastScore)
   if (score < 300) {
     const loseL1 = new Image()
     loseL1.src = images.loseL1
