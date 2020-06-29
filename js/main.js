@@ -1,8 +1,6 @@
 const canvas = document.querySelector('canvas')
 const context = canvas.getContext('2d')
 
-//variables auxiliares
-
 let stage = 'start1'
 let interval
 let keys = []
@@ -15,7 +13,7 @@ let probLogo
 let probItem
 let probVirus
 let score = 0
-let lives = 1
+let lives = 10
 let selected = 'boy'
 let lastScore
 let name = ''
@@ -54,7 +52,13 @@ const images = {
   selectNina: './assets/selectNina.gif',
 }
 
-//clases
+const sounds = {
+  itemSound: './assets/itemSound.wav',
+  logoSound: './assets/logoSound.wav',
+  virusSound: './assets/virusSound.wav',
+  backgroundMusic: './assets/backgroundMusic.wav',
+}
+
 class Background {
   constructor() {
     this.x = 0
@@ -228,11 +232,25 @@ const collisions = () => {
     if (player.isTouching(obstacle)) {
       obstacle.x = -100
       obstacle.y = -100
-      obstacle.type === 'logo' ? (score += 20) : null
-      obstacle.type === 'cubrebocas' ? (score += 10) : null
-      obstacle.type === 'gel' ? (score += 10) : null
-      obstacle.type === 'distancia' ? (score += 10) : null
-      obstacle.type === 'virus' ? lives-- : null
+      if (obstacle.type === 'logo') {
+        const logoSound = new Audio(sounds.logoSound)
+        logoSound.play()
+        score += 20
+      }
+      if (
+        obstacle.type === 'cubrebocas' ||
+        obstacle.type === 'gel' ||
+        obstacle.type === 'distancia'
+      ) {
+        const itemSound = new Audio(sounds.itemSound)
+        itemSound.play()
+        score += 10
+      }
+      if (obstacle.type === 'virus') {
+        const virusSound = new Audio(sounds.virusSound)
+        virusSound.play()
+        lives--
+      }
     }
   })
 }
@@ -320,11 +338,10 @@ const limits = () => {
     : null
 }
 
-//instancias
 const background = new Background()
 let player = new Player()
+const backgroundMusic = new Audio(sounds.backgroundMusic)
 
-//funciones principales
 const update = () => {
   stage === 'start1' ? start1() : null
   stage === 'start2' ? start2() : null
@@ -337,6 +354,8 @@ const update = () => {
   if (stage === 'game') {
     frames++
     context.clearRect(0, 0, canvas.width, canvas.height)
+
+    backgroundMusic.play()
 
     background.draw()
     player.draw()
@@ -424,6 +443,11 @@ const selectPlayer = (selected) => {
   }
 }
 
+const playMusic = () => {
+  backgroundMusic = new Audio(sounds.backgroundMusic)
+  backgroundMusic.play()
+}
+
 const printFinalData = (lastScore) => {
   context.fillStyle = 'white'
   context.font = `22px 'Press Start 2P'`
@@ -439,6 +463,8 @@ const printFinalData = (lastScore) => {
 }
 
 const gameOver = (score) => {
+  backgroundMusic.pause()
+  backgroundMusic.currentTime = 0
   if (score < 300) {
     const loseL1 = new Image()
     loseL1.src = images.loseL1
@@ -491,7 +517,7 @@ const checkLevel = () => {
 }
 
 start()
-//listeners
+
 document.addEventListener('keydown', ({ keyCode }) => {
   keys[keyCode] = true
   key = keyCode
