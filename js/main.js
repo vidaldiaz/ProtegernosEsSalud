@@ -10,14 +10,15 @@ const friction = 0.8
 let frames = 0
 let mainSpeed = 40
 let obstacles = []
-let level = 1
+let level = 3
 let probLogo
 let probItem
 let probVirus
-let score = 0
-let lives = 10
+let score = 900
+let lives = 1
 let selected = 'boy'
 let lastScore
+let name = ''
 
 const images = {
   background: './assets/background.jpg',
@@ -330,6 +331,7 @@ const update = () => {
   stage === 'start3' ? start3() : null
   stage === 'contact' ? contact() : null
   stage === 'commands' ? commands() : null
+  stage === 'getName' ? getName() : null
   stage === 'selectPlayer' ? selectPlayer(selected) : null
 
   if (stage === 'game') {
@@ -401,6 +403,12 @@ const commands = () => {
   context.drawImage(commands, 0, 0, canvas.width, canvas.height)
 }
 
+const getName = () => {
+  name = prompt('Introduce tu nombre: ')
+  name = name.trim()
+  name === null || name === '' ? getName() : (stage = 'selectPlayer')
+}
+
 const selectPlayer = (selected) => {
   if (selected === 'boy') {
     const boySelected = new Image()
@@ -416,26 +424,52 @@ const selectPlayer = (selected) => {
   }
 }
 
+const printFinalData = (lastScore) => {
+  context.fillStyle = 'white'
+  context.font = `22px 'Press Start 2P'`
+  if (lastScore < 800) {
+    context.fillText(`${name}`, 480, 180)
+    context.fillText(`Puntos: ${lastScore}`, 480, 230)
+  }
+
+  if (lastScore > 800) {
+    context.fillText(`${name}`, 480, 150)
+    context.fillText(`Puntos: ${lastScore}`, 480, 200)
+  }
+}
+
 const gameOver = (score) => {
   if (score < 300) {
     const loseL1 = new Image()
     loseL1.src = images.loseL1
-    context.drawImage(loseL1, 0, 0, canvas.width, canvas.height)
+    loseL1.onload = () => {
+      context.drawImage(loseL1, 0, 0, canvas.width, canvas.height)
+      printFinalData(lastScore)
+    }
   }
   if (score >= 300 && score < 800) {
     const loseL2 = new Image()
     loseL2.src = images.loseL2
-    context.drawImage(loseL2, 0, 0, canvas.width, canvas.height)
+    loseL2.onload = () => {
+      context.drawImage(loseL2, 0, 0, canvas.width, canvas.height)
+      printFinalData(lastScore)
+    }
   }
   if (score >= 800 && score < 1000) {
     const loseL3 = new Image()
     loseL3.src = images.loseL3
-    context.drawImage(loseL3, 0, 0, canvas.width, canvas.height)
+    loseL3.onload = () => {
+      context.drawImage(loseL3, 0, 0, canvas.width, canvas.height)
+      printFinalData(lastScore)
+    }
   }
   if (score > 1000) {
     const win = new Image()
     win.src = images.win
-    context.drawImage(win, 0, 0, canvas.width, canvas.height)
+    win.onload = () => {
+      context.drawImage(win, 0, 0, canvas.width, canvas.height)
+      printFinalData(lastScore)
+    }
   }
 }
 
@@ -480,7 +514,7 @@ document.addEventListener('keydown', ({ keyCode }) => {
         break
       }
       if (stage === 'commands') {
-        stage = 'selectPlayer'
+        stage = 'getName'
         break
       }
       if (stage === 'selectPlayer') {
