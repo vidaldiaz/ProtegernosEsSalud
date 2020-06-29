@@ -10,11 +10,11 @@ const friction = 0.8
 let frames = 0
 let mainSpeed = 40
 let obstacles = []
-let level = 3
+let level = 1
 let probLogo
 let probItem
 let probVirus
-let score = 800
+let score = 0
 let lives = 10
 let selected = 'boy'
 let lastScore
@@ -47,6 +47,8 @@ const images = {
   startScreen1: './assets/startScreen1.gif',
   startScreen2: './assets/startScreen2.gif',
   startScreen3: './assets/startScreen3.gif',
+  contact: './assets/contacto.gif',
+  commands: './assets/comandos.gif',
   selectNino: './assets/selectNino.gif',
   selectNina: './assets/selectNina.gif',
 }
@@ -326,6 +328,8 @@ const update = () => {
   stage === 'start1' ? start1() : null
   stage === 'start2' ? start2() : null
   stage === 'start3' ? start3() : null
+  stage === 'contact' ? contact() : null
+  stage === 'commands' ? commands() : null
   stage === 'selectPlayer' ? selectPlayer(selected) : null
 
   if (stage === 'game') {
@@ -385,6 +389,18 @@ const start3 = () => {
   context.drawImage(ss3, 0, 0, canvas.width, canvas.height)
 }
 
+const contact = () => {
+  const contact = new Image()
+  contact.src = images.contact
+  context.drawImage(contact, 0, 0, canvas.width, canvas.height)
+}
+
+const commands = () => {
+  const commands = new Image()
+  commands.src = images.commands
+  context.drawImage(commands, 0, 0, canvas.width, canvas.height)
+}
+
 const selectPlayer = (selected) => {
   if (selected === 'boy') {
     const boySelected = new Image()
@@ -398,11 +414,9 @@ const selectPlayer = (selected) => {
     context.drawImage(girlSelected, 0, 0, canvas.width, canvas.height)
     player.img.src = images.player_girl
   }
-  //selected === 'boy' ? player.img.src = images.player_boy
 }
 
 const gameOver = (score) => {
-  console.log('Entrando a GameOver', lastScore)
   if (score < 300) {
     const loseL1 = new Image()
     loseL1.src = images.loseL1
@@ -458,6 +472,14 @@ document.addEventListener('keydown', ({ keyCode }) => {
         break
       }
       if (stage === 'start3') {
+        stage = 'contact'
+        break
+      }
+      if (stage === 'contact') {
+        stage = 'commands'
+        break
+      }
+      if (stage === 'commands') {
         stage = 'selectPlayer'
         break
       }

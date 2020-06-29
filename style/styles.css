@@ -8,8 +8,5 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.mainCanvas {
-  border: 1px solid black;
+  background-image: url('../assets/backApp.gif');
 }
