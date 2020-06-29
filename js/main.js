@@ -47,6 +47,7 @@ const images = {
   startScreen2: './assets/startScreen2.gif',
   startScreen3: './assets/startScreen3.gif',
   contact: './assets/contacto.gif',
+  dev: './assets/dev.jpg',
   commands: './assets/comandos.gif',
   selectNino: './assets/selectNino.gif',
   selectNina: './assets/selectNina.gif',
@@ -347,6 +348,7 @@ const update = () => {
   stage === 'start2' ? start2() : null
   stage === 'start3' ? start3() : null
   stage === 'contact' ? contact() : null
+  stage === 'dev' ? dev() : null
   stage === 'commands' ? commands() : null
   stage === 'getName' ? getName() : null
   stage === 'selectPlayer' ? selectPlayer(selected) : null
@@ -416,6 +418,12 @@ const contact = () => {
   context.drawImage(contact, 0, 0, canvas.width, canvas.height)
 }
 
+const dev = () => {
+  const dev = new Image()
+  dev.src = images.dev
+  context.drawImage(dev, 0, 0, canvas.width, canvas.height)
+}
+
 const commands = () => {
   const commands = new Image()
   commands.src = images.commands
@@ -449,7 +457,7 @@ const playMusic = () => {
 }
 
 const printFinalData = (lastScore) => {
-  context.fillStyle = 'white'
+  context.fillStyle = 'red'
   context.font = `22px 'Press Start 2P'`
   if (lastScore < 800) {
     context.fillText(`${name}`, 480, 180)
@@ -536,9 +544,14 @@ document.addEventListener('keydown', ({ keyCode }) => {
         break
       }
       if (stage === 'contact') {
+        stage = 'dev'
+        break
+      }
+      if (stage === 'dev') {
         stage = 'commands'
         break
       }
+
       if (stage === 'commands') {
         stage = 'getName'
         break
